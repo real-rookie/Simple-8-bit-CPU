@@ -43,15 +43,20 @@ BEGIN
     -- Instantiate the Unit Under Test (UUT)
     uut: ENTITY WORK.register_file(Behavioral)
         PORT MAP(
-                );
+            clock => clock,
+            rf_write => rf_write,
+            rf_address => rf_address,
+            rf_in => rf_in,
+            rf_out => rf_out
+            );
     -----------------------------------
 
     stim_proc: PROCESS
     BEGIN
         -- Write to all registers
         FOR i IN 0 TO 7 LOOP
-            rf_address <= STD_LOGIC_VECTOR(TO_UNSIGNED(i, rf_address));
-            rf_in      <= STD_LOGIC_VECTOR(TO_UNSIGNED(i, rf_in)); -- Example values
+            rf_address <= STD_LOGIC_VECTOR(TO_UNSIGNED(i, rf_address'LENGTH));
+            rf_in      <= STD_LOGIC_VECTOR(TO_UNSIGNED(i, rf_in'LENGTH)); -- Example values
             rf_write   <= '1';
             WAIT FOR 20 ns;
             -- Store the written value for later verification

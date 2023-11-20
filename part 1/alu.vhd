@@ -29,6 +29,7 @@ ENTITY alu IS
         );
 END alu;
 
+--Tested, do not edit
 ARCHITECTURE Dataflow OF alu IS
 BEGIN
 --*************************************************************************************************
@@ -36,14 +37,15 @@ BEGIN
 -- verify that the operations match the ALU operations table (Table 3) from the lab manual
 -- fix the type errors
     WITH alu_sel SELECT
-        alu_out <=              input_a WHEN "000",
-                    input_a AND input_b WHEN "001",
-        std_logic_vector(rotate_left(unsigned(input_a), to_integer(unsigned(bits_rotate)))) WHEN "010",
-        std_logic_vector(rotate_right(unsigned(input_a), to_integer(unsigned(bits_rotate)))) WHEN "011",
-        std_logic_vector(unsigned(input_a) + unsigned(input_b)) WHEN "100",
-        std_logic_vector(unsigned(input_a) - unsigned(input_b)) WHEN "101",
-        std_logic_vector(unsigned(input_a) + 1) WHEN "110",
-        std_logic_vector(unsigned(input_a) - 1) WHEN "111",
-        (OTHERS => '0') WHEN OTHERS;
+        alu_out <=
+            input_a             WHEN "000",
+            input_a AND input_b WHEN "001",
+            std_logic_vector(rotate_left (unsigned(input_a), to_integer(unsigned(bits_rotate)))) WHEN "010",
+            std_logic_vector(rotate_right(unsigned(input_a), to_integer(unsigned(bits_rotate)))) WHEN "011",
+            std_logic_vector(unsigned(input_a) + unsigned(input_b)) WHEN "100",
+            std_logic_vector(unsigned(input_a) - unsigned(input_b)) WHEN "101",
+            std_logic_vector(unsigned(input_a) + 1)                 WHEN "110",
+            std_logic_vector(unsigned(input_a) - 1)                 WHEN "111",
+            (OTHERS => '0')                                         WHEN OTHERS;
 --*************************************************************************************************
 END Dataflow;

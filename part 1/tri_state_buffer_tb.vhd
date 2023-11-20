@@ -39,7 +39,7 @@ BEGIN
         WAIT FOR 200 ns;
 
         -- Assertion to check if output is high impedance state
-        ASSERT (buffer_output = "XXXXXXXX")
+        ASSERT (buffer_output = "ZZZZZZZZ")
         REPORT "Mismatch in buffer_output value with output_enable low!"
         SEVERITY ERROR;
         
@@ -48,7 +48,7 @@ BEGIN
         WAIT FOR 200 ns;
 
         ASSERT (buffer_output = "11111111")
-        REPORT "Mismatch in buffer_output value with output_enable low!"
+        REPORT "Mismatch in buffer_output value with output_enable high!"
         SEVERITY ERROR;
 
         WAIT;

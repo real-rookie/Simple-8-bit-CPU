@@ -24,11 +24,12 @@ ENTITY tri_state_buffer IS
         );
 END tri_state_buffer;
 
+--Tested, do not edit
 ARCHITECTURE Behavioral OF tri_state_buffer IS
 BEGIN
 --*************************************************************************************************
-    buffer_output <= buffer_input when output_enable = '1' else
-                     (others => 'Z') when output_enable = '0';
+    buffer_output <=    buffer_input    when output_enable = '1' else
+                        (others => 'Z') when output_enable = '0';
 -- write a description that matches the expected behavior of the buffer
 -- read the additional comments on the header for details of how the buffer works
 --*************************************************************************************************

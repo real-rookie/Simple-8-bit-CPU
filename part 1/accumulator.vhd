@@ -29,6 +29,7 @@ PORT( clock     : IN STD_LOGIC
 
 END accumulator;
 
+--Tested, do not edit
 ARCHITECTURE Behavioral OF accumulator IS
 
 BEGIN
@@ -38,7 +39,7 @@ BEGIN
 	-- asynchronous reset of the accumulator
 		IF reset = '1' THEN
 			acc_out <= (OTHERS => '0');
-		ELSIF (acc_write = '1') THEN
+		ELSIF (rising_edge(clock) and acc_write = '1') THEN
 		    acc_out <= acc_in;
 		
 		-- finish the IF statement to write-- ************************************************************** on the accumulator

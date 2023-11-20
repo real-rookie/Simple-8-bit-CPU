@@ -29,6 +29,7 @@ ENTITY register_file IS
         );
 END register_file;
 
+--Tested, do not edit
 ARCHITECTURE Behavioral OF register_file IS
     SUBTYPE reg IS STD_LOGIC_VECTOR(7 DOWNTO 0);
     TYPE register_array IS ARRAY(0 TO 7) OF reg;
@@ -38,17 +39,17 @@ BEGIN
 --*************************************************************************************************
 -- add the process sensitivity list
 -- fix the type mismatch on line 45 and set the input and output appropriately on lines 48 and 51
-    PROCESS ()
+    PROCESS (clock)
         VARIABLE address_index : INTEGER RANGE 0 TO 7; -- Because address go from "000" to "111"
 
     BEGIN
-        address_index := rf_address;
+        address_index := to_integer(unsigned(rf_address));
         IF rising_edge(clock) THEN
             IF rf_write = '1' THEN -- writing enabled
-                RF() <= ; -- finish this line with the proper assignments
+                RF(address_index) <= rf_in; -- finish this line with the proper assignments
                 rf_out            <= (OTHERS => '0');
             ELSE 
-                rf_out <= ; -- finish this line with the proper assignments
+                rf_out <= RF(address_index); -- finish this line with the proper assignments
             END IF;
         END IF;
 

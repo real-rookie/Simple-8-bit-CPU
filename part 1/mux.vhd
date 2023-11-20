@@ -27,6 +27,7 @@ ENTITY mux4 IS
         );
 END mux4;
 
+-- Tested, do not edit
 ARCHITECTURE Dataflow OF mux4 IS
 BEGIN
 --*************************************************************************************************
