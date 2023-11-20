@@ -39,23 +39,58 @@ ENTITY datapath IS
 END datapath;
 
 ARCHITECTURE Structural OF datapath IS
----------------------------------------------------------------------------
--- declare any necessary signals if any
----------------------------------------------------------------------------
+    signal alu_out      : std_logic_vector(7 downto 0);
+    signal rf_out       : std_logic_vector(7 downto 0);
+    signal mux_out      : std_logic_vector(7 downto 0);
+    signal acc_out      : std_logic_vector(7 downto 0);
 BEGIN
 
-    multiplexer: -- instantiate entity
+    multiplexer: entity work.mux4(Dataflow)
+        port map(
+            in0     => alu_out,
+            in1     => rf_out,
+            in2     => immediate_data,
+            in3     => user_input,
+            mux_sel => mux_sel,
+            mux_out => mux_out
+        );
 
-    accumulator: -- instantiate entity
 
-    register_file: -- instantiate entity
+    accumulator: entity work.accumulator(Behavioral)
+        port map(
+            clock       => clock,
+	        reset       => reset,
+            acc_write   => acc_write,
+            acc_in      => mux_out,
+            acc_out     => acc_out
+        );
 
-    alu: -- instantiate entity
+    register_file: entity work.register_file(Behavioral)
+        port map(
+            clock       => clock,
+            rf_write    => rf_write,
+            rf_address  => rf_address,
+            rf_in       => acc_out,
+            rf_out      => rf_out
+        );
 
-    tri_state_buffer: -- instantiate entity
+    alu: entity work.alu(Dataflow)
+        port map(
+            alu_sel     => alu_sel,
+            input_a     => acc_out,
+            input_b     => rf_out,
+            bits_rotate => bits_rotate,
+            alu_out     => alu_out
+        );
 
-    -- add logic for calculating the zero_flag and positive_flag values
-    -- positive_flag <= ;
-    -- zero_flag     <= ;
+    tri_state_buffer: entity work.tri_state_buffer(Behavioral)
+        port map(
+            output_enable   => output_enable,
+            buffer_input    => acc_out,
+            buffer_output   => datapath_out
+        );
+
+    positive_flag <= nor_reduce(mux_out);
+    zero_flag     <= not mux_out(7);
 
 END Structural;

@@ -25,7 +25,7 @@ ENTITY alu IS
         ; input_a     : IN STD_LOGIC_VECTOR(7 DOWNTO 0)
         ; input_b     : IN STD_LOGIC_VECTOR(7 DOWNTO 0)
         ; bits_rotate : IN STD_LOGIC_VECTOR(1 DOWNTO 0)
-        ;alu_out     : OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
+        ; alu_out     : OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
         );
 END alu;
 
