@@ -42,8 +42,18 @@ ARCHITECTURE Structural OF cpu_interface IS
 
 BEGIN
 
-    cpu_core: -- instantiate cpu_core entity
-
+    cpu_core: ENTITY WORK.cpu_core(Structural)
+    port map(
+          clock         => clock
+        , reset         => reset
+        , enter         => enter
+        , user_input    => user_input
+        , CPU_output    => CPU_output
+        , PC_output     => PC_output
+        , OPCODE_output => OPCODE_output
+        , done          => done
+    );
+    
     SSD_driver: ENTITY WORK.display_controller(Behavioral)
         PORT MAP( digits=>digits
                 , clock=>clock
