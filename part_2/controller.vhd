@@ -89,7 +89,7 @@ BEGIN
     --opcode is kept up-to-date
     OPCODE_output <= IR(7 DOWNTO 4);
     
-    PROCESS () -- add sensitity list
+    PROCESS (clock, reset) -- add sensitity list
 
         -- "PM" is the program memory that holds the instructions
         -- to be executed by the CPU 
@@ -137,7 +137,7 @@ BEGIN
                     PC_out         <= std_logic_vector(to_unsigned(PC, PC_out'length));
                     -- ****************************************
                     -- write the 8-bit instruction into the Instruction Register here:
-
+                    IR <= PM(PC);
 				    -- ****************************************
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
@@ -150,7 +150,7 @@ BEGIN
                     IF (enter = '1') THEN
                     -- ****************************************
                     -- increment the program counter here:
-
+                        PC <= PC + 1;
 				    -- ****************************************
                         output_enable  <= '0';
                         state  <= STATE_DECODE;
@@ -187,7 +187,7 @@ BEGIN
                     -- requirement for PM to be very fast
                     -- for LDI to work properly.
                     -- pre-fetch immediate data value here:
-
+                    immediate_data <= PM(PC);
                     -- ****************************************
 
                     acc_write      <= '0';
@@ -195,7 +195,7 @@ BEGIN
                     -- ****************************************
                     -- set up the register file address here to
                     -- reduce the delay for waiting one more cycle
-
+                    rf_address <= IR(2 downto 0);
                     -- ****************************************
                     
                     rf_write       <= '0';
@@ -205,7 +205,7 @@ BEGIN
 
                     -- ****************************************
                     -- set up the bit rotate value here:
-
+                    bits_rotate <= IR(1 downto 0);
                     -- ****************************************
 
                 WHEN STATE_INA => -- INA exceute
@@ -232,16 +232,24 @@ BEGIN
                     state          <= STATE_FETCH;
 
                 WHEN STATE_LDA => -- LDA exceute
+                    -- clock ensures only the value in the designated reg is loaded to acc
                     -- *********************************
-                    -- write the entire state for STATE_LDA
-                    NULL;
+                    mux_sel        <= "01";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '1';
+                    -- rf_address already loaded in the decode state
+                    rf_write       <= '0';
+                    alu_sel        <= "000";
+                    output_enable  <= '0';
+                    done           <= '0';
+                    state          <= STATE_FETCH;
                     -- *********************************
 
                 WHEN STATE_STA => -- STA exceute
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '0';
-                    rf_address     <= IR(2 DOWNTO 0);
+                    -- rf_address     <= IR(2 DOWNTO 0); address already loaded in the decode state
                     -- is the previous line necessary? why?
                     rf_write       <= '1';
                     alu_sel        <= "000";
@@ -252,36 +260,83 @@ BEGIN
                 WHEN STATE_ADD => -- ADD exceute
                     -- *********************************
                     -- write the entire state for STATE_ADD
-                    NULL;
+                    mux_sel        <= "00";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '1';
+                    rf_address     <= "000";
+                    rf_write       <= '0';
+                    alu_sel        <= "100";
+                    output_enable  <= '0';
+                    done           <= '0';
+                    state          <= STATE_FETCH;
                     -- *********************************
 
                 WHEN STATE_SUB => -- SUB exceute
                     -- *********************************
                     -- write the entire state for STATE_SUB
-                    NULL;
+                    mux_sel        <= "00";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '1';
+                    rf_address     <= "000";
+                    rf_write       <= '0';
+                    alu_sel        <= "101";
+                    output_enable  <= '0';
+                    done           <= '0';
+                    state          <= STATE_FETCH;
                     -- *********************************
                 
+
+
+
                 -- *********************************
                 -- write the entire case handling for custom
                 -- instruction 1
                 -- *********************************
                 
+
+
+
                 WHEN STATE_ROTR => -- ROTR exceute
+                    -- rotate right only, no instruction for rotate left
                     -- *********************************
                     -- write the entire state for STATE_ROTR
-                    NULL;
+                    mux_sel        <= "00";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '1';
+                    rf_address     <= "000";
+                    rf_write       <= '0';
+                    alu_sel        <= "011";  -- times of rotation already loaded in the decode state
+                    output_enable  <= '0';
+                    done           <= '0';
+                    state          <= STATE_FETCH;
                     -- *********************************
 
                 WHEN STATE_INC =>
                     -- *********************************
                     -- write the entire state for STATE_INC
-                    NULL;
+                    mux_sel        <= "00";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '1';
+                    rf_address     <= "000";
+                    rf_write       <= '0';
+                    alu_sel        <= "110";
+                    output_enable  <= '0';
+                    done           <= '0';
+                    state          <= STATE_FETCH;
                     -- *********************************
                 
                 WHEN STATE_DEC =>
                     -- *********************************
                     -- write the entire state for STATE_DEC
-                    NULL;
+                    mux_sel        <= "00";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '1';
+                    rf_address     <= "000";
+                    rf_write       <= '0';
+                    alu_sel        <= "111";
+                    output_enable  <= '0';
+                    done           <= '0';
+                    state          <= STATE_FETCH;
                     -- *********************************
 
                 WHEN STATE_AND =>
