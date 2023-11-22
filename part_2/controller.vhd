@@ -92,7 +92,7 @@ BEGIN
     --opcode is kept up-to-date
     OPCODE_output <= IR(7 DOWNTO 4);
     
-    PROCESS (clock, reset) -- add sensitity list
+    PROCESS (clock, reset, enter) -- add sensitity list
 
         -- "PM" is the program memory that holds the instructions
         -- to be executed by the CPU 
