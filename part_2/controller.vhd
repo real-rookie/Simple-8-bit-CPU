@@ -342,7 +342,15 @@ BEGIN
                 WHEN STATE_AND =>
                     -- *********************************
                     -- write the entire state for STATE_AND
-                    NULL;
+                    mux_sel        <= "00";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '1';
+                    -- rf_address  -- loaded in decode state
+                    rf_write       <= '0';
+                    alu_sel        <= "001";
+                    output_enable  <= '0';
+                    done           <= '0';
+                    state          <= STATE_FETCH;
                     -- *********************************
                 
                 -- *********************************
@@ -353,19 +361,54 @@ BEGIN
                 WHEN STATE_JMPZ => -- JMPZ exceute
                     -- *********************************
                     -- write the entire state for STATE_JMPZ
-                    NULL;
+                    mux_sel        <= "00";
+                    -- immediate data has already been pre-fetched
+                    acc_write      <= '0';
+                    rf_address     <= "000";
+                    rf_write       <= '0';
+                    alu_sel        <= "000";
+                    output_enable  <= '0';
+                    done           <= '0';
+                    if(zero_flag = '1') then
+                        PC <= to_integer(unsigned(immediate_data(4 downto 0)));
+                    else
+                        PC <= PC + 1;
+                    end if;
+                    state          <= STATE_FETCH;
                     -- *********************************
 
                 WHEN STATE_OUTA => -- OUTA exceute
+                    -- FIXME
+                    -- at a clock rising edge, this instruction starts executing
+                    -- but is acc_out passed to datapath_out immediately?
+                    -- Then how would the downstream component use it? Use it immediately or at a clock rising edge?
+                    -- What happens if it gets passed right before the next rising edge such that the downstream
+                    -- component has little time left to utilize it?
                     -- *********************************
                     -- write the entire state for STATE_OUTA
-                    NULL;
+                    mux_sel        <= "00";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '0';
+                    rf_address     <= "000";
+                    rf_write       <= '0';
+                    alu_sel        <= "000";
+                    output_enable  <= '1';
+                    done           <= '0';
+                    state          <= STATE_FETCH;
                     -- *********************************
 
                 WHEN STATE_HALT => -- HALT execute
                     -- *********************************
                     -- write the entire state for STATE_HALT
-                    NULL;
+                    mux_sel        <= "00";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '0';
+                    rf_address     <= "000";
+                    rf_write       <= '0';
+                    alu_sel        <= "000";
+                    output_enable  <= '1';
+                    done           <= '1';
+                    state          <= STATE_HALT;
                     -- *********************************
 
                 WHEN OTHERS =>
