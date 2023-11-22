@@ -50,6 +50,7 @@ ARCHITECTURE Behavioral OF controller IS
                        , STATE_STA
                        , STATE_ADD
                        , STATE_SUB
+                       , STATE_JMPR
                        , STATE_ROTR
                        , STATE_INC
                        , STATE_DEC
@@ -70,7 +71,7 @@ ARCHITECTURE Behavioral OF controller IS
     CONSTANT OPCODE_STA  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "0100";
     CONSTANT OPCODE_ADD  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "0101";
     CONSTANT OPCODE_SUB  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "0110";
---LEFT FOR IMPLEMENTATION: STD_LOGIC_VECTOR(3 DOWNTO 0) := "0111";
+    CONSTANT OPCODE_JMPR : STD_LOGIC_VECTOR(3 DOWNTO 0) := "0111";
     CONSTANT OPCODE_ROTR : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1000";
     CONSTANT OPCODE_INC  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1001";
     CONSTANT OPCODE_DEC  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1010";
@@ -170,6 +171,7 @@ BEGIN
                         WHEN OPCODE_STA  => state <= STATE_STA;
                         WHEN OPCODE_ADD  => state <= STATE_ADD;
                         WHEN OPCODE_SUB  => state <= STATE_SUB;
+                        WHEN OPCODE_JMPR => state <= STATE_JMPR;
                         WHEN OPCODE_ROTR => state <= STATE_ROTR;
                         WHEN OPCODE_INC  => state <= STATE_INC;
                         WHEN OPCODE_DEC  => state <= STATE_DEC;
@@ -290,7 +292,23 @@ BEGIN
 
                 -- *********************************
                 -- write the entire case handling for custom
-                -- instruction 1
+                -- instruction 1 JMPR
+                WHEN STATE_JMPR =>
+                mux_sel        <= "00";
+                -- immediate data has already been pre-fetched
+                acc_write      <= '0';
+                rf_address     <= "000";
+                rf_write       <= '0';
+                alu_sel        <= "000";
+                output_enable  <= '0';
+                done           <= '0';
+                if(zero_flag = '1') then
+                    -- TODO Test me
+                    PC <= PC + to_integer(signed(immediate_data(5 downto 0)));  -- [-32, 31]
+                else
+                    PC <= PC + 1;
+                end if;
+                state          <= STATE_FETCH;
                 -- *********************************
                 
 
