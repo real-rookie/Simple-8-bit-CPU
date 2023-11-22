@@ -79,20 +79,20 @@ BEGIN
         );
     datapath : ENTITY WORK.datapath(Structural)
         port map(
-            clock => clock_div,
-            reset => reset,
-            mux_sel => mux_sel,
-            immediate_data => immediate_data,
-            user_input => user_input,
-            acc_write => acc_write,
-            rf_address => rf_address,
-            rf_write => rf_write,
-            alu_sel => alu_sel,
-            bits_rotate => bits_rotate,
-            output_enable => output_enable,
-            zero_flag => zero_flag,
-            positive_flag => positive_flag,
-            datapath_out => CPU_output
+            clock               => clock_div,
+            reset               => reset,
+            mux_sel             => mux_sel,
+            immediate_data      => immediate_data,
+            user_input          => user_input,
+            acc_write           => acc_write,
+            rf_address          => rf_address,
+            rf_write            => rf_write,
+            alu_sel             => alu_sel,
+            bits_rotate         => bits_rotate,
+            output_enable       => output_enable,
+            zero_flag           => zero_flag,
+            positive_flag       => positive_flag,
+            datapath_out        => CPU_output
         );
 
 END Structural;
