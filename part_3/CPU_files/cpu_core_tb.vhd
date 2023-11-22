@@ -35,7 +35,17 @@ ARCHITECTURE behavior OF cpu_core_tb IS
 BEGIN
     --*********************************
     -- Instantiate the Unit Under Test (UUT)
-    UUT : ENTITY WORK.
+    UUT : ENTITY WORK.cpu_core(Structural)
+        port map(
+              clock         => clock
+            , reset         => reset
+            , enter         => enter
+            , user_input    => user_input
+            , CPU_output    => CPU_output
+            , PC_output     => PC_output
+            , OPCODE_output => OPCODE_output
+            , done          => done
+        );
     -----------------------------------
 
     -- Clock process definition
@@ -56,6 +66,9 @@ BEGIN
         
         --*********************************
         -- provide the required input stimulus here for the design under test
+        user_input <= "01010101";
+
+        enter <= '1';
         -----------------------------------
 
         WAIT;
