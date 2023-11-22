@@ -23,8 +23,8 @@ ARCHITECTURE behavior OF cpu_core_tb IS
     SIGNAL clock          : STD_LOGIC := '0';
     SIGNAL reset          : STD_LOGIC := '0';
     SIGNAL user_input     : STD_LOGIC_VECTOR(7 DOWNTO 0);
-    SIGNAL OPCODE_output  : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL PC_output      : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL OPCODE_output  : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL PC_output      : STD_LOGIC_VECTOR(7 DOWNTO 0);
     SIGNAL CPU_output     : STD_LOGIC_VECTOR(7 DOWNTO 0);
     SIGNAL enter          : STD_LOGIC;
     SIGNAL done           : STD_LOGIC;
