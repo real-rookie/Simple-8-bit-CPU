@@ -20,27 +20,31 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 
 ENTITY accumulator IS
-PORT( clock     : IN STD_LOGIC
-	; reset     : IN STD_LOGIC -- accumulator clear signal
-	; acc_write : IN STD_LOGIC 
-	; acc_in    : IN STD_LOGIC_VECTOR (7 DOWNTO 0)
-	; acc_out   : OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
+PORT( clock     	: IN STD_LOGIC
+	; reset     	: IN STD_LOGIC -- accumulator clear signal
+	; acc_write 	: IN STD_LOGIC
+	; acc_negation	: IN STD_LOGIC
+	; acc_in   		: IN STD_LOGIC_VECTOR (7 DOWNTO 0)
+	; acc_out  		: OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
 	);
 
 END accumulator;
 
 --Tested, do not edit
 ARCHITECTURE Behavioral OF accumulator IS
-
+	SIGNAL buf : STD_LOGIC_VECTOR(7 DOWNTO 0);
 BEGIN
+	acc_out <= buf;
 
 	PROCESS (clock, reset) -- add sensitivity list
 	BEGIN
 	-- asynchronous reset of the accumulator
 		IF reset = '1' THEN
-			acc_out <= (OTHERS => '0');
+			buf <= (OTHERS => '0');
 		ELSIF (rising_edge(clock) and acc_write = '1') THEN
-		    acc_out <= acc_in;
+		    buf <= acc_in;
+		ELSIF (rising_edge(clock) and acc_negation = '1') THEN
+			buf <= NOT buf;
 		
 		-- finish the IF statement to write-- ************************************************************** on the accumulator
 		-- HINT: read the additional comments on the header for more

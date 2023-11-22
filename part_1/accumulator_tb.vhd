@@ -17,12 +17,13 @@ ENTITY accumulator_tb IS
 END accumulator_tb;
 
 ARCHITECTURE sim OF accumulator_tb IS
-    SIGNAL clock     : STD_LOGIC := '0';
-    SIGNAL clo       : STD_LOGIC := '0';
-    SIGNAL reset     : STD_LOGIC := '0';
-    SIGNAL acc_write : STD_LOGIC := '0';
-    SIGNAL acc_in    : STD_LOGIC_VECTOR (7 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL acc_out   : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL clock        : STD_LOGIC := '0';
+    SIGNAL clo          : STD_LOGIC := '0';
+    SIGNAL reset        : STD_LOGIC := '0';
+    SIGNAL acc_write    : STD_LOGIC := '0';
+    SIGNAL acc_negation : STD_LOGIC := '0';
+    SIGNAL acc_in       : STD_LOGIC_VECTOR (7 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL acc_out      : STD_LOGIC_VECTOR (7 DOWNTO 0);
 
 BEGIN
 -- **************************************************************
@@ -30,11 +31,12 @@ BEGIN
 -- **************************************************************
 
     uut: ENTITY WORK.accumulator(Behavioral)
-        PORT MAP( clock     => clock
-                , reset     => reset
-                , acc_write => acc_write
-                , acc_in    => acc_in
-                , acc_out   => acc_out
+        PORT MAP( clock         => clock
+                , reset         => reset
+                , acc_write     => acc_write
+                , acc_negation  => acc_negation
+                , acc_in        => acc_in
+                , acc_out       => acc_out
                 );
 
     clk_process : PROCESS
@@ -78,6 +80,20 @@ BEGIN
         -- Assertion to check if data is written correctly
         ASSERT (acc_out = "11001100")
         REPORT "Mismatch in acc_out value after second write!"
+        SEVERITY ERROR;
+
+        -- testing NOT
+        acc_in <= "11111111";
+        acc_write <= '1';
+        WAIT FOR 20 ns;
+
+        acc_write <= '0';
+        acc_negation <= '1';
+        WAIT FOR 20 ns;
+
+        -- Assertion to check if data is negated correctly
+        ASSERT (acc_out = "00000000")
+        REPORT "Mismatch in acc_out value after negation!"
         SEVERITY ERROR;
 
         acc_write <= '0';

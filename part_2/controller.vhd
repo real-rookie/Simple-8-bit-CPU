@@ -27,6 +27,7 @@ ENTITY controller IS
         ; mux_sel        : OUT STD_LOGIC_VECTOR(1 DOWNTO 0)
         ; immediate_data : BUFFER STD_LOGIC_VECTOR(7 DOWNTO 0)
         ; acc_write      : OUT STD_LOGIC
+        ; acc_negation   : OUT STD_LOGIC
         ; rf_address     : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
         ; rf_write       : OUT STD_LOGIC
         ; alu_sel        : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
@@ -55,6 +56,7 @@ ARCHITECTURE Behavioral OF controller IS
                        , STATE_INC
                        , STATE_DEC
                        , STATE_AND
+                       , STATE_NOT
                        , STATE_OUTA
                        , STATE_JMPZ
                        , STATE_HALT
@@ -76,7 +78,7 @@ ARCHITECTURE Behavioral OF controller IS
     CONSTANT OPCODE_INC  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1001";
     CONSTANT OPCODE_DEC  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1010";
     CONSTANT OPCODE_AND  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1011";
---LEFT FOR IMPLEMENTATION: STD_LOGIC_VECTOR(3 DOWNTO 0) := "1100";
+    CONSTANT OPCODE_NOT  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1100";
     CONSTANT OPCODE_JMPZ : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1101";
     CONSTANT OPCODE_OUTA : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1110";
     CONSTANT OPCODE_HALT : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1111";
@@ -110,6 +112,7 @@ BEGIN
             mux_sel        <= "00";
             immediate_data <= (OTHERS => '0');
             acc_write      <= '0';
+            acc_negation   <= '0';
             rf_address     <= "000";
             rf_write       <= '0';
             alu_sel        <= "000";
@@ -143,6 +146,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '0';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "000";
@@ -176,6 +180,7 @@ BEGIN
                         WHEN OPCODE_INC  => state <= STATE_INC;
                         WHEN OPCODE_DEC  => state <= STATE_DEC;
                         WHEN OPCODE_AND  => state <= STATE_AND;
+                        WHEN OPCODE_NOT  => state <= STATE_NOT;
                         WHEN OPCODE_JMPZ => state <= STATE_JMPZ;
                         WHEN OPCODE_OUTA => state <= STATE_OUTA;
                         WHEN OPCODE_HALT => state <= STATE_HALT;
@@ -193,6 +198,7 @@ BEGIN
                     -- ****************************************
 
                     acc_write      <= '0';
+                    acc_negation   <= '0';
                     
                     -- ****************************************
                     -- set up the register file address here to
@@ -214,6 +220,7 @@ BEGIN
                     mux_sel        <= "11";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '1';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "000";
@@ -225,6 +232,7 @@ BEGIN
                     mux_sel        <= "10";
                     -- immediate data has already been pre-fetched
                     acc_write      <= '1';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "000";
@@ -239,6 +247,7 @@ BEGIN
                     mux_sel        <= "01";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '1';
+                    acc_negation   <= '0';
                     -- rf_address already loaded in the decode state
                     rf_write       <= '0';
                     alu_sel        <= "000";
@@ -251,6 +260,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '0';
+                    acc_negation   <= '0';
                     -- rf_address     <= IR(2 DOWNTO 0); address already loaded in the decode state
                     -- is the previous line necessary? why?
                     rf_write       <= '1';
@@ -265,6 +275,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '1';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "100";
@@ -279,6 +290,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '1';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "101";
@@ -297,6 +309,7 @@ BEGIN
                 mux_sel        <= "00";
                 -- immediate data has already been pre-fetched
                 acc_write      <= '0';
+                acc_negation   <= '0';
                 rf_address     <= "000";
                 rf_write       <= '0';
                 alu_sel        <= "000";
@@ -321,6 +334,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '1';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "011";  -- times of rotation already loaded in the decode state
@@ -335,6 +349,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '1';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "110";
@@ -349,6 +364,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '1';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "111";
@@ -363,6 +379,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '1';
+                    acc_negation   <= '0';
                     -- rf_address  -- loaded in decode state
                     rf_write       <= '0';
                     alu_sel        <= "001";
@@ -373,7 +390,18 @@ BEGIN
                 
                 -- *********************************
                 -- write the entire case handling for custom
-                -- instruction 1
+                -- instruction 1 NOT
+                WHEN STATE_NOT =>
+                    mux_sel        <= "00";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '0';
+                    acc_negation   <= '1';
+                    -- rf_address  -- loaded in decode state
+                    rf_write       <= '0';
+                    alu_sel        <= "001";
+                    output_enable  <= '0';
+                    done           <= '0';
+                    state          <= STATE_FETCH;
                 -- *********************************
                 
                 WHEN STATE_JMPZ => -- JMPZ exceute
@@ -382,6 +410,7 @@ BEGIN
                     mux_sel        <= "00";
                     -- immediate data has already been pre-fetched
                     acc_write      <= '0';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "000";
@@ -407,6 +436,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '0';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "000";
@@ -421,6 +451,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '0';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "000";
@@ -433,6 +464,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '0';
+                    acc_negation   <= '0';
                     rf_address     <= "000";
                     rf_write       <= '0';
                     alu_sel        <= "000";
