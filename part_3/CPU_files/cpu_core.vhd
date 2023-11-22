@@ -51,7 +51,7 @@ BEGIN
     -- CPU clock divider, used to slow the processing of instructions
     -- allowing for manual testing. for simulation use freq_out <= 62_500_00
     core_div : ENTITY WORK.clock_divider(Behavioral)
-        GENERIC MAP (freq_out => 62_500_00)
+        GENERIC MAP (freq_out => 62_500_000)
         PORT MAP( clock => clock
                 , clock_div => clock_div
                 );

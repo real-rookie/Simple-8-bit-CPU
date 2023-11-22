@@ -90,7 +90,7 @@ BEGIN
             buffer_output   => datapath_out
         );
 
-    positive_flag <= nor_reduce(mux_out);
-    zero_flag     <= not mux_out(7);
+    positive_flag <= not mux_out(7);
+    zero_flag     <= nor_reduce(mux_out);
 
 END Structural;
