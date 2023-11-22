@@ -38,7 +38,6 @@ ARCHITECTURE Structural OF cpu_core IS
     signal mux_sel          : STD_LOGIC_VECTOR(1 downto 0);
     signal immediate_data   : STD_LOGIC_VECTOR(7 downto 0);
     signal acc_write        : STD_LOGIC;
-    signal acc_negation     : STD_LOGIC;
     signal rf_address       : STD_LOGIC_VECTOR(2 downto 0);
     signal rf_write         : STD_LOGIC;
     signal alu_sel          : STD_LOGIC_VECTOR(2 downto 0);
@@ -65,7 +64,6 @@ BEGIN
             mux_sel             => mux_sel,
             immediate_data      => immediate_data,
             acc_write           => acc_write,
-            acc_negation        => acc_negation,
             rf_address          => rf_address,
             rf_write            => rf_write,
             alu_sel             => alu_sel,
