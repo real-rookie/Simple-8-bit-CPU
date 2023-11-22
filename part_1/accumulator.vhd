@@ -34,7 +34,7 @@ ARCHITECTURE Behavioral OF accumulator IS
 
 BEGIN
 
-	PROCESS (clock) -- add sensitivity list
+	PROCESS (clock, reset) -- add sensitivity list
 	BEGIN
 	-- asynchronous reset of the accumulator
 		IF reset = '1' THEN
