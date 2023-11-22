@@ -195,7 +195,7 @@ BEGIN
                     -- ****************************************
                     -- set up the register file address here to
                     -- reduce the delay for waiting one more cycle
-                    rf_address <= IR(2 downto 0);
+                    rf_address <= IR(2 downto 0); -- necessary
                     -- ****************************************
                     
                     rf_write       <= '0';
@@ -205,7 +205,7 @@ BEGIN
 
                     -- ****************************************
                     -- set up the bit rotate value here:
-                    bits_rotate <= IR(1 downto 0);
+                    bits_rotate <= IR(1 downto 0); -- not necessary
                     -- ****************************************
 
                 WHEN STATE_INA => -- INA exceute
