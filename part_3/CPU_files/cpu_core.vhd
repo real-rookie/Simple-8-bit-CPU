@@ -25,8 +25,8 @@ ENTITY cpu_core IS
         ; enter         : IN STD_LOGIC
         ; user_input    : IN STD_LOGIC_VECTOR(7 DOWNTO 0)
         ; CPU_output    : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
-        ; PC_output     : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
-        ; OPCODE_output : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)
+        ; PC_output     : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)
+        ; OPCODE_output : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
         ; done          : OUT STD_LOGIC
         );
 ---------------------------------------------------------------------------
