@@ -288,7 +288,7 @@ BEGIN
                     mux_sel        <= "00";
                     immediate_data <= (OTHERS => '0');
                     acc_write      <= '1';
-                    rf_address     <= "000";
+                    -- rf_address     <= IR(2 DOWNTO 0);
                     rf_write       <= '0';
                     alu_sel        <= "100";
                     output_enable  <= '0';
