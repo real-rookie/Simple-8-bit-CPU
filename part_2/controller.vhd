@@ -119,6 +119,7 @@ BEGIN
             done           <= '0';
             bits_rotate    <= "00";
             state          <= STATE_FETCH;
+            CSKIP_CYCLE_COUNTER <= '0';
 
 ------------------------------------------------
             -- assembly code for program goes here
