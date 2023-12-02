@@ -396,7 +396,7 @@ BEGIN
                 
                 -- *********************************
                 -- write the entire case handling for custom
-                -- instruction 1
+                -- instruction 2
                 WHEN STATE_CSKIP =>
                     -- *********************************
                     -- write the entire state for STATE_AND
@@ -417,8 +417,8 @@ BEGIN
                             PC <= PC + 1;
                         end if;
                         CSKIP_CYCLE_COUNTER <= '0';
+                        state <= STATE_FETCH;
                     end if;
-                    state <= STATE_FETCH;
                 -- *********************************
                 
                 WHEN STATE_JMPZ => -- JMPZ exceute
