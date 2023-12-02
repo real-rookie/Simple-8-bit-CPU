@@ -148,11 +148,7 @@ BEGIN
             PM(22) := "00001111"; 
             PM(23) := "01010000"; 
             PM(24) := "11100000"; 
-            
-            PM(25) := "01100000"; -- SUB A,R[0]
-            PM(26) := "10000001"; -- ROTR A, 1, Its not a problem that rf_output outputs U for a moment
-
-            PM(27) := "11110000";
+            PM(25) := "11110000";
 
             -- add more instructions as needed
 --------------------------------------------------
