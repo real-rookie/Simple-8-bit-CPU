@@ -52,7 +52,7 @@ BEGIN
     -- allowing for manual testing. for simulation use freq_out <= 62_500_000
     -- implementation 4
     core_div : ENTITY WORK.clock_divider(Behavioral)
-        GENERIC MAP (freq_out => 4) 
+        GENERIC MAP (freq_out => 62_500_000) 
         PORT MAP( clock => clock
                 , clock_div => clock_div
                 );
