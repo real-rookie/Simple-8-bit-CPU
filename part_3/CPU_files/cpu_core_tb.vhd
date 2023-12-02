@@ -66,8 +66,7 @@ BEGIN
         
         --*********************************
         -- provide the required input stimulus here for the design under test
-        --user_input <= "01010101"; -- loops between 2-11
-        user_input <= "00000001"; -- enters inst 12
+        user_input <= "00000010";
         enter <= '1';
         -----------------------------------
 
