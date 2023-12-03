@@ -55,7 +55,7 @@ ARCHITECTURE Behavioral OF controller IS
                        , STATE_INC
                        , STATE_DEC
                        , STATE_AND
-                       , STATE_CSKIP
+                       , STATE_JMPU
                        , STATE_OUTA
                        , STATE_JMPZ
                        , STATE_HALT
@@ -78,7 +78,7 @@ ARCHITECTURE Behavioral OF controller IS
     CONSTANT OPCODE_INC  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1001";
     CONSTANT OPCODE_DEC  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1010";
     CONSTANT OPCODE_AND  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1011";
-    CONSTANT OPCODE_CSKIP: STD_LOGIC_VECTOR(3 DOWNTO 0) := "1100";
+    CONSTANT OPCODE_JMPU : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1100";
     CONSTANT OPCODE_JMPZ : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1101";
     CONSTANT OPCODE_OUTA : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1110";
     CONSTANT OPCODE_HALT : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1111";
@@ -198,7 +198,7 @@ BEGIN
                         WHEN OPCODE_INC     => state <= STATE_INC;
                         WHEN OPCODE_DEC     => state <= STATE_DEC;
                         WHEN OPCODE_AND     => state <= STATE_AND;
-                        WHEN OPCODE_CSKIP   => state <= STATE_CSKIP;
+                        WHEN OPCODE_JMPU   => state <= STATE_JMPU;
                         WHEN OPCODE_JMPZ    => state <= STATE_JMPZ;
                         WHEN OPCODE_OUTA    => state <= STATE_OUTA;
                         WHEN OPCODE_HALT    => state <= STATE_HALT;
@@ -325,11 +325,9 @@ BEGIN
                 alu_sel        <= "000";
                 output_enable  <= '0';
                 done           <= '0';
-                if(zero_flag = '1') then
-                    -- TODO Test me
+                PC <= PC + 1;
+                if(positive_flag /= '1') then
                     PC <= PC + to_integer(signed(immediate_data(5 downto 0)));  -- [-32, 31]
-                else
-                    PC <= PC + 1;
                 end if;
                 state          <= STATE_FETCH;
                 -- *********************************
@@ -396,29 +394,19 @@ BEGIN
                 
                 -- *********************************
                 -- write the entire case handling for custom
-                -- instruction 2
-                WHEN STATE_CSKIP =>
+                -- instruction 2 unconditional absolute jump
+                WHEN STATE_JMPU =>
                     -- *********************************
-                    -- write the entire state for STATE_AND
-                    -- FIX TEST ME
                     mux_sel        <= "00";
-                    immediate_data <= (OTHERS => '0');
+                    -- immediate data has already been pre-fetched
                     acc_write      <= '0';
-                    -- rf_address  -- loaded in decode state
+                    rf_address     <= "000";
                     rf_write       <= '0';
-                    alu_sel        <= "101";
+                    alu_sel        <= "000";
                     output_enable  <= '0';
                     done           <= '0';
-                    if CSKIP_CYCLE_COUNTER = '0' then
-                        state      <= STATE_CSKIP;
-                        CSKIP_CYCLE_COUNTER <= '1';
-                    else
-                        if zero_flag = '1' then
-                            PC <= PC + 1;
-                        end if;
-                        CSKIP_CYCLE_COUNTER <= '0';
-                        state <= STATE_FETCH;
-                    end if;
+                    PC <= to_integer(unsigned(immediate_data(4 downto 0)));
+                    state          <= STATE_FETCH;
                 -- *********************************
                 
                 WHEN STATE_JMPZ => -- JMPZ exceute
@@ -432,10 +420,9 @@ BEGIN
                     alu_sel        <= "000";
                     output_enable  <= '0';
                     done           <= '0';
+                    PC <= PC + 1;
                     if(zero_flag = '1') then
                         PC <= to_integer(unsigned(immediate_data(4 downto 0)));
-                    else
-                        PC <= PC + 1;
                     end if;
                     state          <= STATE_FETCH;
                     -- *********************************

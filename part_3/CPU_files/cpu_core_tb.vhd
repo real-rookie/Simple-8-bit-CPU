@@ -66,7 +66,7 @@ BEGIN
         
         --*********************************
         -- provide the required input stimulus here for the design under test
-        user_input <= "00000100";
+        user_input <= "10101010";
         enter <= '1';
         -----------------------------------
 
