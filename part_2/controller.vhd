@@ -55,7 +55,7 @@ ARCHITECTURE Behavioral OF controller IS
                        , STATE_INC
                        , STATE_DEC
                        , STATE_AND
-                       , STATE_JMPU
+                       , STATE_XCHG
                        , STATE_OUTA
                        , STATE_JMPZ
                        , STATE_HALT
@@ -78,14 +78,14 @@ ARCHITECTURE Behavioral OF controller IS
     CONSTANT OPCODE_INC  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1001";
     CONSTANT OPCODE_DEC  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1010";
     CONSTANT OPCODE_AND  : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1011";
-    CONSTANT OPCODE_JMPU : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1100";
+    CONSTANT OPCODE_XCHG : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1100";
     CONSTANT OPCODE_JMPZ : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1101";
     CONSTANT OPCODE_OUTA : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1110";
     CONSTANT OPCODE_HALT : STD_LOGIC_VECTOR(3 DOWNTO 0) := "1111";
 
 
     -- program memory that will store the instructions sequentially
-    TYPE PM_BLOCK IS ARRAY(0 TO 31) OF STD_LOGIC_VECTOR(7 DOWNTO 0);
+    TYPE PM_BLOCK IS ARRAY(0 TO 32) OF STD_LOGIC_VECTOR(7 DOWNTO 0);
     
 BEGIN
 
@@ -123,37 +123,39 @@ BEGIN
 
 -------------------------------------designed program-------------------------------
 -- Given a user input, this program outputs the largest number that can be composed of the ones in it.
-            PM(0) :="00100000";
-            PM(1) :="00001001";
-            PM(2) :="01000001";
-            PM(3) :="00100000";
-            PM(4) :="00000000";
-            PM(5) :="01000000";
-            PM(6) :="01000010";
-            PM(7) :="00010000";
-            PM(8) :="01000011";
-            PM(9) :="00110011";
-            PM(10) :="10000001";
-            PM(11) :="01000011";
-            PM(12) :="00110000";
-            PM(13) :="10010000";
-            PM(14) :="01000000";
-            PM(15) :="01100001";
-            PM(16) :="11010000";
-            PM(17) :="00011101";
-            PM(18) :="00110011";
-            PM(19) :="01110000";
-            PM(20) :="00000011";
-            PM(21) :="11000000";
-            PM(22) :="00001001";
-            PM(23) :="00110010";
-            PM(24) :="10010000";
-            PM(25) :="10000001";
-            PM(26) :="01000010";
-            PM(27) :="11000000";
-            PM(28) :="00001001";
-            PM(29) :="00110010";
-            PM(30) :="11110000";
+PM(0) :="00100000";
+PM(1) :="00001001";
+PM(2) :="01000001";
+PM(3) :="00100000";
+PM(4) :="00000000";
+PM(5) :="01000000";
+PM(6) :="01000010";
+PM(7) :="01000100";
+PM(8) :="00010000";
+PM(9) :="01000011";
+PM(10) :="00110000";
+PM(11) :="10010000";
+PM(12) :="01000000";
+PM(13) :="01100001";
+PM(14) :="11010000";
+PM(15) :="00011110";
+PM(16) :="00110011";
+PM(17) :="10000001";
+PM(18) :="01000011";
+PM(19) :="01110000";
+PM(20) :="00000100";
+PM(21) :="00110100";
+PM(22) :="11010000";
+PM(23) :="00001010";
+PM(24) :="00110010";
+PM(25) :="10010000";
+PM(26) :="10000001";
+PM(27) :="01000010";
+PM(28) :="01110000";
+PM(29) :="11101101";
+PM(30) :="11000010";
+PM(31) :="11110000";
+
 
             
 -------------------------------------given test program-------------------------------
@@ -233,7 +235,7 @@ BEGIN
                         WHEN OPCODE_INC     => state <= STATE_INC;
                         WHEN OPCODE_DEC     => state <= STATE_DEC;
                         WHEN OPCODE_AND     => state <= STATE_AND;
-                        WHEN OPCODE_JMPU   => state <= STATE_JMPU;
+                        WHEN OPCODE_XCHG    => state <= STATE_XCHG;
                         WHEN OPCODE_JMPZ    => state <= STATE_JMPZ;
                         WHEN OPCODE_OUTA    => state <= STATE_OUTA;
                         WHEN OPCODE_HALT    => state <= STATE_HALT;
@@ -360,9 +362,10 @@ BEGIN
                 alu_sel        <= "000";
                 output_enable  <= '0';
                 done           <= '0';
-                PC <= PC + 1;
                 if(positive_flag /= '1') then
                     PC <= PC + to_integer(signed(immediate_data(5 downto 0)));  -- [-32, 31]
+                else
+                    PC <= PC + 1;
                 end if;
                 state          <= STATE_FETCH;
                 -- *********************************
@@ -430,17 +433,16 @@ BEGIN
                 -- *********************************
                 -- write the entire case handling for custom
                 -- instruction 2 unconditional absolute jump
-                WHEN STATE_JMPU =>
+                WHEN STATE_XCHG =>
                     -- *********************************
-                    mux_sel        <= "00";
-                    -- immediate data has already been pre-fetched
-                    acc_write      <= '0';
-                    rf_address     <= "000";
-                    rf_write       <= '0';
+                    mux_sel        <= "01";
+                    immediate_data <= (OTHERS => '0');
+                    acc_write      <= '1';
+                    --rf_address     <= "000";
+                    rf_write       <= '1';
                     alu_sel        <= "000";
                     output_enable  <= '0';
                     done           <= '0';
-                    PC <= to_integer(unsigned(immediate_data(4 downto 0)));
                     state          <= STATE_FETCH;
                 -- *********************************
                 
