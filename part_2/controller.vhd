@@ -432,7 +432,7 @@ PM(31) :="11110000";
                 
                 -- *********************************
                 -- write the entire case handling for custom
-                -- instruction 2 unconditional absolute jump
+                -- instruction 2 exchange
                 WHEN STATE_XCHG =>
                     -- *********************************
                     mux_sel        <= "01";
